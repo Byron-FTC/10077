@@ -51,10 +51,12 @@ public class OurRobot
 
         // Define and Initialize Motors
         leftDrive   = hwMap.dcMotor.get("leftDrive");
-        rightDrive    = hwMap.d  = hwMap.dcMotor.get("rightDrive");
-        throwerMotor.get("armMotor");
+        rightDrive    = hwMap.dcMotor.get("rightDrive");
+        throwerMotor = hwMap.dcMotor.get("throwerMotor");
+
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        throwerMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Set all motors to zero power
         leftDrive.setPower(0);
@@ -67,11 +69,7 @@ public class OurRobot
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         throwerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Define and initialize ALL installed servos.
-        leftClaw = hwMap.servo.get("leftHand");
-        rightClaw = hwMap.servo.get("rightHand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+
     }
 
     /***
