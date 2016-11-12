@@ -35,6 +35,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
 
 
@@ -112,7 +114,18 @@ public class CrazyDriver extends OpMode{
         // If the b button is pushed, throw the ball.
         if (b=true)
         {
-           robot.throwerMotor.setPower(1);
+            robot.throwerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            int targetPosition = robot.throwerMotor.getCurrentPosition() + 300;
+            robot.throwerMotor.setTargetPosition(targetPosition);
+
+            // Throw it.
+            robot.throwerMotor.setPower(1);
+            // Stop throwing it.
+            robot.throwerMotor.setPower(0);
+
+            robot.throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
         }
 
 
