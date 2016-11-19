@@ -48,9 +48,7 @@ import com.qualcomm.robotcore.util.Range;
  * All device access is managed through the HardwarePushbot class.
  *
  * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
- * It raises and lowers the claw using the Gampad Y and A buttons respectively.
- * It also opens and closes the claws slowly using the left and right Bumper buttons.
- *
+
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
@@ -60,10 +58,6 @@ public class CrazyDriver extends OpMode{
 
     /* Declare OpMode members. */
     OurRobot robot      = new OurRobot(); // use the class created to define a Pushbot's hardware
-                                                         // could also use HardwarePushbotMatrix class.
-    double          clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
-
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -92,6 +86,7 @@ public class CrazyDriver extends OpMode{
      */
     @Override
     public void start() {
+        robot.spinnerMotor.setPower(1.0); // Start the spinner motor full power
     }
 
     /*
@@ -99,47 +94,84 @@ public class CrazyDriver extends OpMode{
      */
     @Override
     public void loop() {
-        double left;
-        double right;
-        boolean b = false;
+        double leftMotorPower;
+        double rightMotorPower;
+        boolean bButton;
 
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
-        b=gamepad2.b;
-        robot.leftDrive.setPower(left);
-        robot.rightDrive.setPower(right);
+        leftMotorPower = -gamepad1.left_stick_y;
+        rightMotorPower = -gamepad1.right_stick_y;
 
-        // If the b button is pushed, throw the ball.
-        if (b=true)
+        robot.leftDrive.setPower(leftMotorPower);
+        robot.rightDrive.setPower(rightMotorPower);
+
+
+        // If the bButton button is pushed, throw the ball.
+        bButton=gamepad2.b;
+        if (bButton==true)
         {
-            robot.throwerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            int targetPosition = robot.throwerMotor.getCurrentPosition() + 300;
-            robot.throwerMotor.setTargetPosition(targetPosition);
 
-            // Throw it.
-            robot.throwerMotor.setPower(1);
-            // Stop throwing it.
-            robot.throwerMotor.setPower(0);
-
-            robot.throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
+            try {
+                throwIt(1, //power = full
+                        20 //percentage of full rotation to swing.
+                         );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("left",  "%.2f", leftMotorPower);
+        telemetry.addData("right", "%.2f", rightMotorPower);
         updateTelemetry(telemetry);
     }
+
+
 
     /*
      * Code to run ONCE after the driver hits STOP
      */
     @Override
     public void stop() {
-    }
+        robot.spinnerMotor.setPower(0); // Stop the spinner motor
 
     }
+
+
+    // Activate the thrower arm at a given power and time.
+    public void throwIt(double throwPower, // how hard to throw it
+                        int percentRotation // percentage of full rotation to move the throwing arm.
+    ) throws InterruptedException {
+
+        int newThrowPosition;
+        int discretePositions = 1440; // discrete number of positions for the motor
+
+        // Determine new target position, and pass to motor controller
+        newThrowPosition = robot.throwerMotor.getCurrentPosition() + percentRotation / 100 * discretePositions;
+        robot.throwerMotor.setTargetPosition(newThrowPosition);
+
+        // Turn On RUN_TO_POSITION
+        robot.throwerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.throwerMotor.setPower(throwPower);
+        telemetry.addData("Running to %7d :%7d", newThrowPosition);
+
+        // keep looping while we are still active, and there is time left, and both motors are running.
+        while (robot.throwerMotor.isBusy()) {
+
+            // Display it for the driver.
+            telemetry.addData("Running at %7d :%7d", robot.throwerMotor.getCurrentPosition());
+            telemetry.update();
+
+            // Allow time for other processes to run.
+            wait(5); // wait 5 milliseconds
+
+        }
+
+        // Stop throwing
+        robot.throwerMotor.setPower(0);
+    }
+    }
+
