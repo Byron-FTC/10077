@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
+@TeleOp(name="CrazyDriver", group="Pushbot")
 public class CrazyDriver extends OpMode{
 
     /* Declare OpMode members. */
@@ -109,7 +109,7 @@ public class CrazyDriver extends OpMode{
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
         right_bumper=gamepad2.right_bumper;
-        if (right_bumper=true)
+        if (right_bumper)
         {
             if (robot.spinnerMotor.getPower()>0)
             {

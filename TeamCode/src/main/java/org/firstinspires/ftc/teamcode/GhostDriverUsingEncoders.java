@@ -67,7 +67,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Pushbot: Auto Drive By Encoder", group="Pushbot")
-@Disabled
+
 public class GhostDriverUsingEncoders extends LinearOpMode {
 
     /* Declare OpMode members. */
