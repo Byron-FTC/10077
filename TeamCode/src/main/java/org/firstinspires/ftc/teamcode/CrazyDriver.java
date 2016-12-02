@@ -98,6 +98,7 @@ public class CrazyDriver extends OpMode{
         double rightMotorPower;
         boolean bButton;
         boolean right_bumper;
+        boolean left_bumper;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         leftMotorPower = -gamepad1.left_stick_y;
@@ -106,10 +107,21 @@ public class CrazyDriver extends OpMode{
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
 
+        if (gamepad2.left_bumper) left_bumper = true;
+        else left_bumper = false;
+        if (left_bumper)
+        {
+            if (robot.spinnerMotor.getPower()!=0)
+            {
+                robot.spinnerMotor.setPower(0);
+            }
+            else robot.spinnerMotor.setPower(-1);
+
+        }
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
-        right_bumper=gamepad2.right_bumper;
-        if (right_bumper=true)
+    right_bumper=gamepad2.right_bumper;
+        if (right_bumper)
         {
             if (robot.spinnerMotor.getPower()>0)
             {
@@ -120,7 +132,7 @@ public class CrazyDriver extends OpMode{
 
         // If the bButton button is pushed, throw the ball.
         bButton=gamepad2.b;
-        if (bButton==true)
+        if (bButton)
         {
 
             try {
