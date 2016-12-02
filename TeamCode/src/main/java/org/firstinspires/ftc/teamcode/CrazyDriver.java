@@ -97,8 +97,11 @@ public class CrazyDriver extends OpMode{
         double leftMotorPower;
         double rightMotorPower;
         boolean bButton;
+        boolean aButton;
         boolean right_bumper;
         boolean left_bumper;
+        boolean x_button;
+        boolean y_button;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         leftMotorPower = -gamepad1.left_stick_y;
@@ -106,6 +109,24 @@ public class CrazyDriver extends OpMode{
 
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
+
+        // its gonna be the beacon servo
+        y_button=gamepad2.y;
+        if (y_button)
+        {
+            robot.pushBeaconServo.setPosition(1);
+        }
+        else robot.pushBeaconServo.setPosition(0.5);
+
+
+        x_button=gamepad2.x;
+        if (x_button)
+        {
+
+            robot.pushBallServo.setPosition(0.5);
+
+        }
+        else robot.pushBallServo.setPosition(1.0);
 
         if (gamepad2.left_bumper) left_bumper = true;
         else left_bumper = false;
@@ -131,6 +152,14 @@ public class CrazyDriver extends OpMode{
         }
 
         // If the bButton button is pushed, throw the ball.
+        aButton=gamepad2.a;
+        if (aButton)
+        {
+        robot.throwerMotor.setPower(-1);
+        }
+        else robot.throwerMotor.setPower(0);
+
+        // If the bButton button is pushed, throw the ball.
         bButton=gamepad2.b;
         if (bButton)
         {
@@ -138,7 +167,7 @@ public class CrazyDriver extends OpMode{
             try {
                 throwIt(1, //power = full
                         20 //percentage of full rotation to swing.
-                         );
+                );
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
