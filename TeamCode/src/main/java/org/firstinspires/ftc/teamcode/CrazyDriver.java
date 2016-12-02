@@ -96,6 +96,7 @@ public class CrazyDriver extends OpMode{
     public void loop() {
         double leftMotorPower;
         double rightMotorPower;
+        boolean aButton;
         boolean bButton;
         boolean right_bumper;
 
@@ -119,6 +120,17 @@ public class CrazyDriver extends OpMode{
         }
 
         // If the bButton button is pushed, throw the ball.
+        aButton=gamepad2.a;
+        if (aButton==true)
+        {
+            robot.throwerMotor.setPower(1);
+        }
+        else {
+            robot.throwerMotor.setPower(0);
+        }
+
+
+        // If the bButton button is pushed, throw the ball.
         bButton=gamepad2.b;
         if (bButton==true)
         {
@@ -126,7 +138,7 @@ public class CrazyDriver extends OpMode{
             try {
                 throwIt(1, //power = full
                         20 //percentage of full rotation to swing.
-                         );
+                );
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -160,29 +172,31 @@ public class CrazyDriver extends OpMode{
         int discretePositions = 1440; // discrete number of positions for the motor
 
         // Determine new target position, and pass to motor controller
-        newThrowPosition = robot.throwerMotor.getCurrentPosition() + percentRotation / 100 * discretePositions;
+        newThrowPosition = robot.throwerMotor.getCurrentPosition() + percentRotation * discretePositions /100 ;
         robot.throwerMotor.setTargetPosition(newThrowPosition);
 
         // Turn On RUN_TO_POSITION
         robot.throwerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         robot.throwerMotor.setPower(throwPower);
-        telemetry.addData("Running to %7d :%7d", newThrowPosition);
+        telemetry.addData("Running to %7d:", newThrowPosition);
 
         // keep looping while we are still active, and there is time left, and both motors are running.
         while (robot.throwerMotor.isBusy()) {
 
             // Display it for the driver.
-            telemetry.addData("Running at %7d :%7d", robot.throwerMotor.getCurrentPosition());
+            telemetry.addData("Currently at %7d :", robot.throwerMotor.getCurrentPosition());
             telemetry.update();
 
-            // Allow time for other processes to run.
-            wait(5); // wait 5 milliseconds
-
+            // Yield back our thread scheduling quantum and give other threads at
+            // our priority level a chance to run
+            Thread.yield();
         }
 
         // Stop throwing
         robot.throwerMotor.setPower(0);
+        robot.throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    }
+
+}
 
