@@ -106,8 +106,8 @@ public class CrazyDriver extends OpMode{
         boolean y_button;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftMotorPower = -gamepad1.left_stick_y;
-        rightMotorPower = -gamepad1.right_stick_y;
+        leftMotorPower = -gamepad1.left_stick_y*0.3; // only use 1/10 of the power
+        rightMotorPower = -gamepad1.right_stick_y*0.3; // only use 1/10 of the power
 
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
@@ -116,7 +116,7 @@ public class CrazyDriver extends OpMode{
         y_button = gamepad2.y;
         if (y_button) {
             robot.pushBeaconServo.setPosition(0.5);
-        } else robot.pushBeaconServo.setPosition(0.2);
+        } else robot.pushBeaconServo.setPosition(0.25);
 
         //if x is pressed, itll go to half position. when it isnt pressed, it go to max position
         x_button = gamepad2.x;
@@ -128,12 +128,11 @@ public class CrazyDriver extends OpMode{
 
 
         //press to reverse the spinner
-        if (gamepad2.left_bumper) left_bumper = true;
-        else left_bumper = false;
+        left_bumper = gamepad2.left_bumper;
         if (left_bumper) {
             if (robot.spinnerMotor.getPower() != 0) {
                 robot.spinnerMotor.setPower(0);
-            } else robot.spinnerMotor.setPower(-1);
+            } else robot.spinnerMotor.setPower(-0.5);
 
         }
 
@@ -142,7 +141,7 @@ public class CrazyDriver extends OpMode{
         if (right_bumper) {
             if (robot.spinnerMotor.getPower() > 0) {
                 robot.spinnerMotor.setPower(0);
-            } else robot.spinnerMotor.setPower(1);
+            } else robot.spinnerMotor.setPower(0.5);
         }
 
 
@@ -170,7 +169,15 @@ public class CrazyDriver extends OpMode{
 
 
         // If the bButton button is pushed, throw the ball.
-        bButton=gamepad2.b;
+         bButton=gamepad2.b;
+        if (bButton)
+        {
+            robot.throwerMotor.setPower(0.02);
+        }
+
+
+        // If the bButton button is pushed, throw the ball.
+       /* bButton=gamepad2.b;
         if (bButton)
         {
 
@@ -183,7 +190,7 @@ public class CrazyDriver extends OpMode{
             }
         }
 
-
+*/
         // Send telemetry message to signify robot running;
         telemetry.addData("left",  "%.2f", leftMotorPower);
         telemetry.addData("right", "%.2f", rightMotorPower);
@@ -195,6 +202,7 @@ public class CrazyDriver extends OpMode{
     /*
      * Code to run ONCE after the driver hits STOP
      */
+
     @Override
     public void stop() {
         robot.spinnerMotor.setPower(0); // Stop the spinner motor
