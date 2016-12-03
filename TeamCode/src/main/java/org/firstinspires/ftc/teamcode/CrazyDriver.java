@@ -115,8 +115,8 @@ public class CrazyDriver extends OpMode{
         //if y is pressed, itll go to half position. when it isnt pressed, it go to max position
         y_button = gamepad2.y;
         if (y_button) {
-            robot.pushBeaconServo.setPosition(1);
-        } else robot.pushBeaconServo.setPosition(0.5);
+            robot.pushBeaconServo.setPosition(0.5);
+        } else robot.pushBeaconServo.setPosition(0.2);
 
         //if x is pressed, itll go to half position. when it isnt pressed, it go to max position
         x_button = gamepad2.x;
