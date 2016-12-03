@@ -58,7 +58,8 @@ public class CrazyDriver extends OpMode{
 
     /* Declare OpMode members. */
     OurRobot robot      = new OurRobot(); // use the class created to define a Pushbot's hardware
-
+    int catCounter;
+    boolean catOn=false;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -86,7 +87,8 @@ public class CrazyDriver extends OpMode{
      */
     @Override
     public void start() {
-        robot.spinnerMotor.setPower(1.0); // Start the spinner motor full power
+
+        robot.spinnerMotor.setPower(0.0); // Drivers did not like spinner starting right away
     }
 
     /*
@@ -110,54 +112,62 @@ public class CrazyDriver extends OpMode{
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
 
-        // its gonna be the beacon servo
-        y_button=gamepad2.y;
-        if (y_button)
-        {
+        //if y is pressed, itll go to half position. when it isnt pressed, it go to max position
+        y_button = gamepad2.y;
+        if (y_button) {
             robot.pushBeaconServo.setPosition(1);
-        }
-        else robot.pushBeaconServo.setPosition(0.5);
+        } else robot.pushBeaconServo.setPosition(0.5);
 
-
-        x_button=gamepad2.x;
-        if (x_button)
-        {
+        //if x is pressed, itll go to half position. when it isnt pressed, it go to max position
+        x_button = gamepad2.x;
+        if (x_button) {
 
             robot.pushBallServo.setPosition(0.5);
 
-        }
-        else robot.pushBallServo.setPosition(1.0);
+        } else robot.pushBallServo.setPosition(1.0);
 
+
+        //press to reverse the spinner
         if (gamepad2.left_bumper) left_bumper = true;
         else left_bumper = false;
-        if (left_bumper)
-        {
-            if (robot.spinnerMotor.getPower()!=0)
-            {
+        if (left_bumper) {
+            if (robot.spinnerMotor.getPower() != 0) {
                 robot.spinnerMotor.setPower(0);
-            }
-            else robot.spinnerMotor.setPower(-1);
+            } else robot.spinnerMotor.setPower(-1);
 
         }
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
-    right_bumper=gamepad2.right_bumper;
-        if (right_bumper)
-        {
-            if (robot.spinnerMotor.getPower()>0)
-            {
+        right_bumper = gamepad2.right_bumper;
+        if (right_bumper) {
+            if (robot.spinnerMotor.getPower() > 0) {
                 robot.spinnerMotor.setPower(0);
-            }
-            else robot.spinnerMotor.setPower(1);
+            } else robot.spinnerMotor.setPower(1);
         }
 
-        // If the bButton button is pushed, throw the ball.
-        aButton=gamepad2.a;
-        if (aButton)
-        {
-        robot.throwerMotor.setPower(-1);
+
+        // If the aButton button is pushed, throw the ball.
+        aButton = gamepad2.a;
+        if (aButton) {
+            robot.throwerMotor.setPower(-1);
+            catCounter=0;
+            catOn=true;
         }
         else robot.throwerMotor.setPower(0);
+        if (catOn) catCounter++;
+
+        telemetry.addData("catOn",catOn);
+        telemetry.addData("catCounter",catCounter);
+
+
+        if ((catOn) && (catCounter==3000))
+        {
+
+            robot.throwerMotor.setPower(1);
+            catOn=false;
+
+        }
+
 
         // If the bButton button is pushed, throw the ball.
         bButton=gamepad2.b;
@@ -224,6 +234,7 @@ public class CrazyDriver extends OpMode{
 
         // Stop throwing
         robot.throwerMotor.setPower(0);
+        telemetry.update();
     }
     }
 

@@ -76,7 +76,7 @@ public
         spinnerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set the thrower motor to run with an encoder
-        throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        throwerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
