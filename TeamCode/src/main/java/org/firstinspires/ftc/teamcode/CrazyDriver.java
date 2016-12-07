@@ -106,8 +106,8 @@ public class CrazyDriver extends OpMode{
         boolean y_button;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftMotorPower = -gamepad1.left_stick_y*0.3; // only use 1/10 of the power
-        rightMotorPower = -gamepad1.right_stick_y*0.3; // only use 1/10 of the power
+        leftMotorPower = -gamepad1.left_stick_y*0.4; // only use 1/10 of the power
+        rightMotorPower = -gamepad1.right_stick_y*0.4; // only use 1/10 of the power
 
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
@@ -116,7 +116,7 @@ public class CrazyDriver extends OpMode{
         y_button = gamepad2.y;
         if (y_button) {
             robot.pushBeaconServo.setPosition(0.5);
-        } else robot.pushBeaconServo.setPosition(0.25);
+        } else robot.pushBeaconServo.setPosition(0.30);
 
         //if x is pressed, itll go to half position. when it isnt pressed, it go to max position
         x_button = gamepad2.x;
@@ -133,7 +133,7 @@ public class CrazyDriver extends OpMode{
             if (robot.spinnerMotor.getPower() != 0) {
                 robot.spinnerMotor.setPower(0);
             } else robot.spinnerMotor.setPower(-0.5);
-
+            tryAwait(50); // wait 20 milliseconds so loop doesn't read button twice and end up doing a double toggle
         }
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
@@ -142,6 +142,7 @@ public class CrazyDriver extends OpMode{
             if (robot.spinnerMotor.getPower() > 0) {
                 robot.spinnerMotor.setPower(0);
             } else robot.spinnerMotor.setPower(0.5);
+            tryAwait(50); // wait 50 milliseconds so loop doesn't read button twice and end up doing a double toggle
         }
 
 
@@ -149,23 +150,8 @@ public class CrazyDriver extends OpMode{
         aButton = gamepad2.a;
         if (aButton) {
             robot.throwerMotor.setPower(-1);
-            catCounter=0;
-            catOn=true;
         }
         else robot.throwerMotor.setPower(0);
-        if (catOn) catCounter++;
-
-        telemetry.addData("catOn",catOn);
-        telemetry.addData("catCounter",catCounter);
-
-
-        if ((catOn) && (catCounter==3000))
-        {
-
-            robot.throwerMotor.setPower(1);
-            catOn=false;
-
-        }
 
 
         // If the bButton button is pushed, throw the ball.
@@ -244,5 +230,14 @@ public class CrazyDriver extends OpMode{
         robot.throwerMotor.setPower(0);
         telemetry.update();
     }
+
+    public void tryAwait(long millis)  // try to do a sleep, which should work...
+    {
+        try {
+            Thread.sleep(millis);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
+}
 
