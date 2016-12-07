@@ -133,7 +133,7 @@ public class CrazyDriver extends OpMode{
             if (robot.spinnerMotor.getPower() != 0) {
                 robot.spinnerMotor.setPower(0);
             } else robot.spinnerMotor.setPower(-0.5);
-            tryAwait(50); // wait 20 milliseconds so loop doesn't read button twice and end up doing a double toggle
+            tryAwait(100); // wait  so loop doesn't read button twice and end up doing a double toggle
         }
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
@@ -142,7 +142,7 @@ public class CrazyDriver extends OpMode{
             if (robot.spinnerMotor.getPower() > 0) {
                 robot.spinnerMotor.setPower(0);
             } else robot.spinnerMotor.setPower(0.5);
-            tryAwait(50); // wait 50 milliseconds so loop doesn't read button twice and end up doing a double toggle
+            tryAwait(100); // wait  milliseconds so loop doesn't read button twice and end up doing a double toggle
         }
 
 
@@ -158,7 +158,7 @@ public class CrazyDriver extends OpMode{
          bButton=gamepad2.b;
         if (bButton)
         {
-            robot.throwerMotor.setPower(0.02);
+            robot.throwerMotor.setPower(0.04);
         }
 
 
