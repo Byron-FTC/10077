@@ -53,12 +53,13 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="CrazyDriver", group="Pushbot")
+@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
 public class CrazyDriver extends OpMode{
 
     /* Declare OpMode members. */
     OurRobot robot      = new OurRobot(); // use the class created to define a Pushbot's hardware
-
+    int catCounter;
+    boolean catOn=false;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -86,7 +87,8 @@ public class CrazyDriver extends OpMode{
      */
     @Override
     public void start() {
-        robot.spinnerMotor.setPower(1.0); // Start the spinner motor full power
+
+        robot.spinnerMotor.setPower(0.0); // Drivers did not like spinner starting right away
     }
 
     /*
@@ -96,43 +98,87 @@ public class CrazyDriver extends OpMode{
     public void loop() {
         double leftMotorPower;
         double rightMotorPower;
-        boolean aButton;
         boolean bButton;
+        boolean aButton;
         boolean right_bumper;
+        boolean left_bumper;
+        boolean x_button;
+        boolean y_button;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftMotorPower = -gamepad1.left_stick_y;
-        rightMotorPower = -gamepad1.right_stick_y;
+        leftMotorPower = -gamepad1.left_stick_y*0.3; // only use 1/10 of the power
+        rightMotorPower = -gamepad1.right_stick_y*0.3; // only use 1/10 of the power
 
         robot.leftDrive.setPower(leftMotorPower);
         robot.rightDrive.setPower(rightMotorPower);
 
+        //if y is pressed, itll go to half position. when it isnt pressed, it go to max position
+        y_button = gamepad2.y;
+        if (y_button) {
+            robot.pushBeaconServo.setPosition(0.5);
+        } else robot.pushBeaconServo.setPosition(0.25);
+
+        //if x is pressed, itll go to half position. when it isnt pressed, it go to max position
+        x_button = gamepad2.x;
+        if (x_button) {
+
+            robot.pushBallServo.setPosition(0.5);
+
+        } else robot.pushBallServo.setPosition(1.0);
+
+
+        //press to reverse the spinner
+        left_bumper = gamepad2.left_bumper;
+        if (left_bumper) {
+            if (robot.spinnerMotor.getPower() != 0) {
+                robot.spinnerMotor.setPower(0);
+            } else robot.spinnerMotor.setPower(-0.5);
+
+        }
 
         // if right bumper is pushed, if the spinner is on, turn it off. If spinner is off, turn it on.
-        right_bumper=gamepad2.right_bumper;
-        if (right_bumper)
-        {
-            if (robot.spinnerMotor.getPower()>0)
-            {
+        right_bumper = gamepad2.right_bumper;
+        if (right_bumper) {
+            if (robot.spinnerMotor.getPower() > 0) {
                 robot.spinnerMotor.setPower(0);
-            }
-            else robot.spinnerMotor.setPower(1);
+            } else robot.spinnerMotor.setPower(0.5);
         }
 
-        // If the bButton button is pushed, throw the ball.
-        aButton=gamepad2.a;
-        if (aButton==true)
+
+        // If the aButton button is pushed, throw the ball.
+        aButton = gamepad2.a;
+        if (aButton) {
+            robot.throwerMotor.setPower(-1);
+            catCounter=0;
+            catOn=true;
+        }
+        else robot.throwerMotor.setPower(0);
+        if (catOn) catCounter++;
+
+        telemetry.addData("catOn",catOn);
+        telemetry.addData("catCounter",catCounter);
+
+
+        if ((catOn) && (catCounter==3000))
         {
+
             robot.throwerMotor.setPower(1);
-        }
-        else {
-            robot.throwerMotor.setPower(0);
+            catOn=false;
+
         }
 
 
         // If the bButton button is pushed, throw the ball.
-        bButton=gamepad2.b;
-        if (bButton==true)
+         bButton=gamepad2.b;
+        if (bButton)
+        {
+            robot.throwerMotor.setPower(0.02);
+        }
+
+
+        // If the bButton button is pushed, throw the ball.
+       /* bButton=gamepad2.b;
+        if (bButton)
         {
 
             try {
@@ -144,7 +190,7 @@ public class CrazyDriver extends OpMode{
             }
         }
 
-
+*/
         // Send telemetry message to signify robot running;
         telemetry.addData("left",  "%.2f", leftMotorPower);
         telemetry.addData("right", "%.2f", rightMotorPower);
@@ -156,6 +202,7 @@ public class CrazyDriver extends OpMode{
     /*
      * Code to run ONCE after the driver hits STOP
      */
+
     @Override
     public void stop() {
         robot.spinnerMotor.setPower(0); // Stop the spinner motor
@@ -172,31 +219,30 @@ public class CrazyDriver extends OpMode{
         int discretePositions = 1440; // discrete number of positions for the motor
 
         // Determine new target position, and pass to motor controller
-        newThrowPosition = robot.throwerMotor.getCurrentPosition() + percentRotation * discretePositions /100 ;
+        newThrowPosition = robot.throwerMotor.getCurrentPosition() + percentRotation / 100 * discretePositions;
         robot.throwerMotor.setTargetPosition(newThrowPosition);
 
         // Turn On RUN_TO_POSITION
         robot.throwerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         robot.throwerMotor.setPower(throwPower);
-        telemetry.addData("Running to %7d:", newThrowPosition);
+        telemetry.addData("Running to %7d :%7d", newThrowPosition);
 
         // keep looping while we are still active, and there is time left, and both motors are running.
         while (robot.throwerMotor.isBusy()) {
 
             // Display it for the driver.
-            telemetry.addData("Currently at %7d :", robot.throwerMotor.getCurrentPosition());
+            telemetry.addData("Running at %7d :%7d", robot.throwerMotor.getCurrentPosition());
             telemetry.update();
 
-            // Yield back our thread scheduling quantum and give other threads at
-            // our priority level a chance to run
-            Thread.yield();
+            // Allow time for other processes to run.
+            wait(5); // wait 5 milliseconds
+
         }
 
         // Stop throwing
         robot.throwerMotor.setPower(0);
-        robot.throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.update();
     }
-
-}
+    }
 

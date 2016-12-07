@@ -30,8 +30,8 @@ public class OurRobot
     public DcMotor  rightDrive  = null;
     public DcMotor  spinnerMotor  = null;
     public DcMotor  throwerMotor    = null;
-    //public CRServo pushBeaconServo = null;
-   // public CRServo pushBallServo = null;
+    public Servo pushBeaconServo = null;
+    public Servo pushBallServo = null;
 
 
 public
@@ -50,8 +50,8 @@ public
         hwMap = ahwMap;
 
         // Define and initialize servos
-       // pushBallServo= hwMap.crservo.get("pushBallServo");
-       // pushBeaconServo= hwMap.crservo.get("pushBeaconServo");
+        pushBallServo= hwMap.servo.get("pushBallServo");
+        pushBeaconServo= hwMap.servo.get("pushBeaconServo");
 
         // Define and Initialize Motors
         leftDrive   = hwMap.dcMotor.get("leftDrive");
@@ -76,7 +76,7 @@ public
         spinnerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set the thrower motor to run with an encoder
-        throwerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        throwerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
