@@ -150,9 +150,9 @@ public class CrazyDriver extends OpMode{
         aButton = gamepad2.a;
         if (aButton) {
             robot.throwerMotor.setPower(-1);//throw at full power for a half of a second
-            tryAwait(500);
+            tryAwait(200);
             robot.throwerMotor.setPower(0.4);//go back down at 40% power for a half of a second
-            tryAwait(500);
+            tryAwait(200);
         }
         else robot.throwerMotor.setPower(0);
 
