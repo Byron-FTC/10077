@@ -149,7 +149,10 @@ public class CrazyDriver extends OpMode{
         // If the aButton button is pushed, throw the ball.
         aButton = gamepad2.a;
         if (aButton) {
-            robot.throwerMotor.setPower(-1);
+            robot.throwerMotor.setPower(-1);//throw at full power for a half of a second
+            tryAwait(500);
+            robot.throwerMotor.setPower(0.4);//go back down at 40% power for a half of a second
+            tryAwait(500);
         }
         else robot.throwerMotor.setPower(0);
 
