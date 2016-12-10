@@ -60,8 +60,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Ghost Driver", group="Pushbot")
-public class GhostDriverUsingTime extends LinearOpMode {
+@Autonomous(name="Ghost Driver Turning Left", group="Pushbot")
+public class GhostDriverTurningLeft extends LinearOpMode {
 
     /* Declare OpMode members. */
     OurRobot         robot   = new OurRobot();   // Use a Pushbot's hardware
@@ -100,9 +100,11 @@ public class GhostDriverUsingTime extends LinearOpMode {
         robot.spinnerMotor.setPower(0);
         robot.tryAwait(1000);
         robot.pushBeaconServo.setPosition(0.30);
-        robot.ExecuteStep(.5,.5,0.75,"Drive forward to push big ball.");
-        robot.ExecuteStep(.0,.5,2,"Turn left.");
-        robot.ExecuteStep(.4,.4,2,"Go straight to hit the beacon.");
+        robot.ExecuteStep(.4,.4,0.5,"Drive forward to push big ball.");
+        robot.ExecuteStep(.0,.5,1,"Turn left.");
+        robot.ExecuteStep(.3,.3,1,"Go straight for a bit.");
+        robot.ExecuteStep(.0,3.1,0.5,"Turn left.");
+        robot.ExecuteStep(.1,.1,0.5,"Straight into beacon.");
         robot.ExecuteStep(0,0,0, "Stop on base.");
 
         /*
