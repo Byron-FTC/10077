@@ -75,11 +75,55 @@ public
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         spinnerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Set the thrower motor to run with an encoder
+        // Set the thrower motor to run without an encoder
         throwerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
+    public void tryAwait(long millis)  // try to do a sleep, which should work...
+    {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
 
+        }
+    }
+
+        public void throwTheBall(){
+         throwerMotor.setPower(-1);//throw at full power for a half of a second
+         tryAwait(200);
+         throwerMotor.setPower(0.1);//go back down at 40% power for a half of a second
+         tryAwait(500);
+        }
+
+        public void loadNextBall(){
+            pushBallServo.setPosition(0.5);
+            tryAwait(300);
+            pushBallServo.setPosition(1.0);
+
+
+        }
+
+    public void ExecuteStep(double left, double right, double seconds, String description){
+        // Step 1:  Drive forward for 2 seconds
+        ElapsedTime stepTime = new ElapsedTime();
+        SetMotorPowers(left,right);
+        stepTime.reset();
+        while (stepTime.seconds() < seconds) {
+             Thread.yield();  // If other threads of work need a chance to do something, let them.
+        }
+
+
+    }
+
+    private void SetMotorPowers(double left, double right){
+        //telemetry.addData("power",  );
+        leftDrive.setPower(left);
+        rightDrive.setPower(right);
+
+    }
 
 }
+
+
 

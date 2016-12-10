@@ -33,10 +33,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 
 
 /**
@@ -60,96 +62,75 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Ghost Driver", group="Pushbot")
-public class GhostDriverUsingTime extends LinearOpMode {
+@Autonomous(name="Autonomous Mode Blue", group="10077")
+public class autonomous_mode_blue extends OpMode {
 
     /* Declare OpMode members. */
-    OurRobot         robot   = new OurRobot();   // Use a Pushbot's hardware
-    private ElapsedTime     runtime = new ElapsedTime();
+    OurRobot robot      = new OurRobot(); // use the class created to define a Pushbot's hardware
 
-
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
-
+    /*
+     * Code to run ONCE when the driver hits INIT
+     */
     @Override
-    public void runOpMode() throws InterruptedException {
-
-        /*
-         * Initialize the drive system variables.
+    public void init() {
+        /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
-        telemetry.update();
+        telemetry.addData("Say", "Hello Driver");    //
+        updateTelemetry(telemetry);
+    }
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    @Override
+    public void init_loop() {
+    }
 
-        robot.spinnerMotor.setPower(1);
+    /*
+     * Code to run ONCE when the driver hits PLAY
+     */
+    @Override
+    public void start() {
+
+        robot.spinnerMotor.setPower(0.7); // Drivers did not like spinner starting right away
+    }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+
+
+    public DcMotor  leftDrive   = null;
+    public DcMotor  rightDrive  = null;
+    public DcMotor  spinnerMotor  = null;
+    public DcMotor  throwerMotor    = null;
+    public Servo pushBeaconServo = null;
+    public Servo pushBallServo = null;
+
+    @Override
+    public void loop() {
         robot.throwTheBall();
-        robot.tryAwait(2000);
+        robot.tryAwait(100);
         robot.loadNextBall();
-        robot.tryAwait(2000);
+        robot.tryAwait(100);
         robot.throwTheBall();
-        robot.tryAwait(2000);
+        robot.tryAwait(100);
         robot.loadNextBall();
-        robot.tryAwait(2000);
+        robot.tryAwait(100);
         robot.throwTheBall();
         robot.spinnerMotor.setPower(0);
         robot.tryAwait(1000);
-        robot.pushBeaconServo.setPosition(0.30);
-        robot.ExecuteStep(.5,.5,0.75,"Drive forward to push big ball.");
-        robot.ExecuteStep(.0,.5,2,"Turn left.");
-        robot.ExecuteStep(.4,.4,2,"Go straight to hit the beacon.");
+        robot.ExecuteStep(.3,.3,2,"Drive forward to push big ball.");
         robot.ExecuteStep(0,0,0, "Stop on base.");
 
-        /*
 
 
-
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
-
-        // Step 1:  Drive forward for 3 seconds
-        robot.leftDrive.setPower(FORWARD_SPEED);
-        robot.rightDrive.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-            idle();
-        }
-
-        // Step 2:  Spin right for 1.3 seconds
-        robot.leftDrive.setPower(TURN_SPEED);
-        robot.rightDrive.setPower(-TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-            idle();
-        }
-
-        // Step 3:  Drive Backwards for 1 Second
-        robot.leftDrive.setPower(-FORWARD_SPEED);
-        robot.rightDrive.setPower(-FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-            idle();
-        }
-
-        // Step 4:  Stop and close the claw.
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);
-        idle();
-        */
     }
 
+
 }
+
