@@ -87,6 +87,8 @@ public class GhostDriverTurningLeft extends LinearOpMode {
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
         robot.pushBallServo.setPosition(1.0);
+        robot.pushBeaconServo.setPosition(0);
+        robot.tryAwait(2000);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -100,6 +102,7 @@ public class GhostDriverTurningLeft extends LinearOpMode {
 
 
         robot.spinnerMotor.setPower(1);
+        robot.tryAwait(2000);
         robot.throwerMotor.setPower(0.1);
         robot.tryAwait(500);
         robot.throwerMotor.setPower(0);
@@ -120,7 +123,7 @@ public class GhostDriverTurningLeft extends LinearOpMode {
         robot.tryAwait(1000);
         robot.pushBeaconServo.setPosition(0.35);
         robot.ExecuteStep(.4,.4,0.7,"Drive forward to push big ball.");
-        robot.tryAwait(2000);
+        robot.tryAwait(1000);
 
         //   robot.ExecuteStep(.0,.5,1,"Turn left.");
      //   robot.ExecuteStep(.3,.3,1,"Go straight for a bit.");

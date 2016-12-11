@@ -86,6 +86,9 @@ public class GhostDriverTurningRight extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
+        robot.pushBallServo.setPosition(1.0);
+        robot.pushBeaconServo.setPosition(0);
+        robot.tryAwait(2000);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
