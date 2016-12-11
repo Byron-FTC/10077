@@ -33,10 +33,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 
 
 /**
@@ -60,8 +58,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Ghost Driver Turning Left", group="Pushbot")
-public class GhostDriverTurningLeft extends LinearOpMode {
+@Autonomous(name="Ghost Driver Turning Right", group="Pushbot")
+public class GhostDriverTurningRight extends LinearOpMode {
 
     /* Declare OpMode members. */
     OurRobot         robot   = new OurRobot();   // Use a Pushbot's hardware
@@ -71,42 +69,33 @@ public class GhostDriverTurningLeft extends LinearOpMode {
     static final double     FORWARD_SPEED = 0.6;
     static final double     TURN_SPEED    = 0.5;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
 
         /*
+
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
-        robot.throwerMotor.setPower(-0.1);
+        robot.throwerMotor.setPower(-.1);
         robot.tryAwait(500);
         robot.throwerMotor.setPower(0);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
-        robot.pushBallServo.setPosition(1.0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        robot.ExecuteStep(.2,.2,0.1,"Drive forward just a bit.");
-        robot.tryAwait(600);
-        robot.ExecuteStep(0,0,0,"Drive forward just a bit.");
-
-
         robot.pushBeaconServo.setPosition(0.3);
-        robot.tryAwait(1000);
+        robot.tryAwait(2000);
+        robot.throwerMotor.setPower(0.1);
+        robot.tryAwait(500);
 
 
         robot.spinnerMotor.setPower(1);
-        robot.throwerMotor.setPower(0.1);
-        robot.tryAwait(500);
-        robot.throwerMotor.setPower(0);
-
-        robot.loadNextBall();
-        robot.tryAwait(2000);
-
         robot.throwTheBall();
         robot.tryAwait(2000);
         robot.loadNextBall();
@@ -118,16 +107,15 @@ public class GhostDriverTurningLeft extends LinearOpMode {
         robot.throwTheBall();
         robot.spinnerMotor.setPower(0);
         robot.tryAwait(1000);
-        robot.pushBeaconServo.setPosition(0.35);
+        robot.pushBeaconServo.setPosition(0.30);
         robot.ExecuteStep(.4,.4,0.7,"Drive forward to push big ball.");
-        robot.tryAwait(2000);
-
-        //   robot.ExecuteStep(.0,.5,1,"Turn left.");
+     //   robot.ExecuteStep(.5,.0,1,"Turn right.");
      //   robot.ExecuteStep(.3,.3,1,"Go straight for a bit.");
-     //   robot.ExecuteStep(.0,3.1,0.5,"Turn left.");
+     //   robot.ExecuteStep(3.1,0,0.5,"Turn right.");
      //   robot.ExecuteStep(.1,.1,0.5,"Straight into beacon.");
      //   robot.ExecuteStep(-.4,-.4,0.5,"Drive backwards to return to center base.");
         robot.ExecuteStep(0,0,0, "Stop on base.");
+
 
         /*
 

@@ -98,7 +98,7 @@ public
 
         public void loadNextBall(){
             pushBallServo.setPosition(0.5);
-            tryAwait(400);
+            tryAwait(300);
             pushBallServo.setPosition(1.0);
 
 
